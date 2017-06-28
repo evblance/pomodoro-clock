@@ -2,10 +2,10 @@
 
   var breakTime = false;
   var countdownActive = false;
-  // var workInterval = 5 * 60;
-  // var breakInterval = 1 * 60;
-  var startingWorkInterval;
-  var startingBreakInterval;
+  var workInterval = null;
+  var breakInterval = null;
+  var startingWorkInterval = null;
+  var startingBreakInterval = null;
 
   function formatTime(timeInSeconds) {
     var totalSeconds = timeInSeconds;
@@ -38,8 +38,12 @@
   function toggleBreak() { // <-- this function needs to change class of progress bar
     if ( breakTime ) {
       breakTime = false;
+      $('.progress-bar').removeClass('progress-break');
+      $('.progress-bar').addClass('progress-work');
     } else {
       breakTime = true;
+      $('.progress-bar').removeClass('progress-work');
+      $('.progress-bar').addClass('progress-break');
     }
   }
 
@@ -82,23 +86,23 @@
       }
     } else if ( !isOnBreak() && workInterval == 0 ) { // workInterval has reached 0
       toggleBreak();
-      workInterval = $('input[name*="work"]').val() * 60;
+      startingBreakInterval = $('input[name*="break"]').val() * 60;
+      breakInterval = startingBreakInterval;
+      // workInterval = $('input[name*="work"]').val() * 60;
     }
     if ( isOnBreak() && breakInterval > 0 ) {
         breakInterval--;
     } else if ( isOnBreak() && breakInterval == 0 ) {
       toggleBreak();
+      startingWorkInterval = $('input[name*="work"]').val() * 60;
+      workInterval = startingWorkInterval;
       workInterval--;
     }
 
     if ( !isOnBreak() ) {
       var progress = getProgress(workInterval, startingWorkInterval);
-      $('.progress-bar').removeClass('progress-break');
-      $('.progress-bar').addClass('progress-work');
     } else {
       var progress = getProgress(breakInterval, startingBreakInterval);
-      $('.progress-bar').removeClass('progress-work');
-      $('.progress-bar').addClass('progress-break');
     }
 
     var displayProgress = 100 - (progress * 100);
@@ -109,10 +113,12 @@
     event.preventDefault();
     if ( !isOnCountdown() && formValid() ) {
       startCountdown();
+      $('input').attr('disabled','disabled');
       $(this).toggleClass('pomodoro-button-on');
       $(this).text('stop');
     } else if ( isOnCountdown() ) {
       stopCountdown();
+      $('input').removeAttr('disabled');
       breakTime = false;
       $(this).toggleClass('pomodoro-button-on');
       $(this).text('start');
