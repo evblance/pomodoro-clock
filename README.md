@@ -12,5 +12,5 @@ Clone or download the this repository and run app.html in your favourite browser
 1. Set the desired work and break intervals and press the START button.
 2. The timer can be reset by pressing STOP and then START again.
 
-## Note
+#### Note
 This is one of the projects in the FreeCodeCamp Front-End Dev Curriculum. Eyes off the code until you have submitted your own version, if applicable.
